@@ -1,0 +1,71 @@
+// Calculadora simples com adição, subtração, multiplicação, divisão e raiz quadrada
+// Para os cálculos serão usadas funções das respectivas operações
+
+#include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
+
+double soma (double x, double y) {
+  return x + y;
+}
+
+double subtracao (double x, double y) {
+  return x - y;
+}
+
+double multiplicacao (double x, double y) {
+  return x * y;
+}
+
+double divisao (double x, double y) {
+  return x / y;
+}
+
+double raiz_quadrada (double x) {
+  return sqrt(x);
+}
+
+int main (void) {
+  char entrada [20];
+
+  // Obtendo a conta a ser feita
+  printf("Digite a operação desejada: ");
+  fgets(entrada, sizeof entrada, stdin);
+  double valor1, valor2;
+  char operador;
+  sscanf(entrada, "%lf%c%lf", &valor1, &operador, &valor2);
+
+  double resultado;
+  bool valido = true;
+
+  // Realizando a conta
+  switch (operador) {
+    case '+': 
+      resultado = soma(valor1, valor2);
+    break;
+    case '-': 
+      resultado = subtracao(valor1, valor2);
+    break;
+    case '*': 
+      resultado = multiplicacao(valor1, valor2);
+    break;
+    case '/': 
+      resultado = divisao(valor1, valor2);
+    break;
+    case 'r': 
+      resultado = raiz_quadrada(valor1);
+    break;
+    default: 
+      valido = false;
+  }
+
+  // Mostrando o resultado
+  if (valido) {
+    printf("%g", resultado);
+  }
+  else {
+    printf("Esse operador não é valido");
+  }
+  
+  return 0;
+}
