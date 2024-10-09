@@ -1,0 +1,313 @@
+// Jogo da velha
+#include <stdio.h>
+#include <stdbool.h>
+
+#define QUANT 3
+
+// Sub-rotina para a impressão do numero das casa
+void impressao_inicial (void) {
+
+  int numero_casa[QUANT][QUANT] = {1,2,3,4,5,6,7,8,9};
+  
+  for (int i = 0; i < QUANT; i++) {
+    for (int j = 0; j < QUANT; j++) {
+      if (j < 2) {
+        printf(" %d |", numero_casa[i][j]);
+      }
+      else {
+        printf(" %d ", numero_casa[i][j]);
+      }
+    }
+    if (i < 2) {
+      printf("\n");
+      printf("---|---|---");
+      printf("\n");
+    }
+    else {
+      printf("\n");
+    }
+  }
+}
+
+// Sub-rotina para a impressão do espaco quadricular do jogo
+void impressao_do_jogo (char espaco[QUANT][QUANT]) {
+  for (int i = 0; i < QUANT; i++) {
+    for (int j = 0; j < QUANT; j++) {
+      if (j < 2) {
+        printf(" %c |", espaco[i][j]);
+      }
+      else {
+        printf(" %c ", espaco[i][j]);
+      }
+    }
+    if (i < 2) {
+      printf("\n");
+      printf("---|---|---");
+      printf("\n");
+    }
+    else {
+      printf("\n");
+    }
+  }
+  
+}
+
+// Sub-rotina para atribuir X à um espaço
+void jogada (char espaco[QUANT][QUANT], char jogador) {
+  char entrada[160];
+
+  printf("\nVez de %c\n", jogador);
+  
+  printf("Digite a casa desejada: ");
+  fgets(entrada, sizeof entrada, stdin);
+  int casa;
+  sscanf(entrada, "%d", &casa);
+
+  switch (casa) {
+    case 1 :
+      espaco[0][0] = jogador;
+    break;
+    case 2 :
+      espaco[0][1] = jogador;
+    break;
+    case 3 :
+      espaco[0][2] = jogador;
+    break;
+    case 4 :
+      espaco[1][0] = jogador;
+    break;
+    case 5 :
+      espaco[1][1] = jogador;
+    break;
+    case 6 :
+      espaco[1][2] = jogador;
+    break;
+    case 7 :
+      espaco[2][0] = jogador;
+    break;
+    case 8 :
+      espaco[2][1] = jogador;
+    break;
+    case 9 :
+      espaco[2][2] = jogador;
+    break;
+    default : 
+      printf("Número de casa inválido\n");
+  }
+}
+
+// Função para verificar se alguem ganhou
+bool ganhou_funcao (char espaco[QUANT][QUANT], char jogador) {
+  bool existe_ganhador = false;
+
+  // Verificação
+  if (espaco[0][0] == jogador) {
+    if (espaco[0][1] == jogador) {
+      if (espaco[0][2] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+    else if (espaco[1][0] == jogador) {
+      if (espaco[2][0] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+    else if (espaco[1][1] == jogador) {
+      if (espaco[2][2] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+  }
+  
+  if (espaco[2][2] == jogador) {
+    if (espaco[2][1] == jogador) {
+      if (espaco[2][0] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+    else if (espaco[1][2] == jogador) {
+      if (espaco[0][2] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+  } 
+
+  if (espaco[1][1] == jogador) {
+    if (espaco[0][1] == jogador) {
+      if (espaco[2][1] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+    else if (espaco[1][0] == jogador) {
+      if (espaco[1][2] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+    else if (espaco[0][2] == jogador) {
+      if (espaco[2][0] == jogador) {
+        existe_ganhador = true;
+      }
+    }
+  } 
+
+  return existe_ganhador;  
+}
+
+int main (void) {
+  char entrada[20];
+  
+  // Criação da variavel utiliza para armazenar o que está contida em cada casa
+  char espaco[QUANT][QUANT] = {' ',' ',' ',' ',' ',' ',' ',' ',' '};
+
+  // Impressão das instruções
+  printf("JOGO DA VELHA\n\n");
+  printf("As posições das casas são: \n\n");
+
+  impressao_inicial();
+
+  printf("\n\n");
+
+  printf("Quem irá começar? X ou O? ");
+  fgets(entrada, sizeof entrada, stdin);
+  char quem_comeca;
+  sscanf(entrada, "%c", &quem_comeca);
+  
+  bool O_ganhou_variavel = false;
+  bool X_ganhou_variavel = false;
+  bool deu_velha = false;
+  int contador_jogadas = 0;
+
+  if (quem_comeca == 'X') {
+    for (int i = 0; i < 2; i++) {
+      jogada(espaco, 'X');
+      printf("\n");
+      impressao_do_jogo(espaco);
+
+      jogada(espaco, 'O');
+      printf("\n");
+      impressao_do_jogo(espaco);
+    }
+
+    int tem_ganhador = false;
+
+    jogada(espaco, 'X');
+    printf("\n");
+    impressao_do_jogo(espaco);
+    tem_ganhador = ganhou_funcao(espaco, 'X');
+    
+    if (!tem_ganhador) {
+      jogada(espaco, 'O');
+      printf("\n");
+      impressao_do_jogo(espaco);
+      tem_ganhador = ganhou_funcao(espaco, 'O');
+      
+      if (!tem_ganhador) {
+        jogada(espaco, 'X');
+        printf("\n");
+        impressao_do_jogo(espaco);
+        tem_ganhador = ganhou_funcao(espaco, 'X');
+        
+        if(!tem_ganhador) {
+          jogada(espaco, 'O');
+          printf("\n");
+          impressao_do_jogo(espaco);
+          tem_ganhador = ganhou_funcao(espaco, 'O');
+          
+          if(!tem_ganhador) {
+            jogada(espaco, 'X');
+            printf("\n");
+            impressao_do_jogo(espaco);
+            tem_ganhador = ganhou_funcao(espaco, 'X');
+
+            if (!tem_ganhador) {
+              printf("\nDeu velha");
+            }
+            else {
+              printf("\nX ganhou");
+            }
+          }
+          else {
+            printf("\nO ganhou");
+          }
+        }
+        else {
+          printf("\nX ganhou");
+        }
+      }
+      else {
+        printf("\nO ganhou");
+      }
+    }
+    else {
+      printf("\nX ganhou");
+    }
+  }
+
+  if (quem_comeca == 'O') {
+    for (int i = 0; i < 2; i++) {
+      jogada(espaco, 'O');
+      printf("\n");
+      impressao_do_jogo(espaco);
+
+      jogada(espaco, 'X');
+      printf("\n");
+      impressao_do_jogo(espaco);
+    }
+
+    int tem_ganhador = false;
+
+    jogada(espaco, 'O');
+    printf("\n");
+    impressao_do_jogo(espaco);
+    tem_ganhador = ganhou_funcao(espaco, 'O');
+
+    if (!tem_ganhador) {
+      jogada(espaco, 'X');
+      printf("\n");
+      impressao_do_jogo(espaco);
+      tem_ganhador = ganhou_funcao(espaco, 'X');
+
+      if (!tem_ganhador) {
+        jogada(espaco, 'O');
+        printf("\n");
+        impressao_do_jogo(espaco);
+        tem_ganhador = ganhou_funcao(espaco, 'O');
+
+        if(!tem_ganhador) {
+          jogada(espaco, 'X');
+          printf("\n");
+          impressao_do_jogo(espaco);
+          tem_ganhador = ganhou_funcao(espaco, 'X');
+
+          if(!tem_ganhador) {
+            jogada(espaco, 'O');
+            printf("\n");
+            impressao_do_jogo(espaco);
+            tem_ganhador = ganhou_funcao(espaco, 'O');
+
+            if (!tem_ganhador) {
+              printf("\nDeu velha");
+            }
+            else {
+              printf("\nO ganhou");
+            }
+          }
+          else {
+            printf("\nX ganhou");
+          }
+        }
+        else {
+          printf("\nO ganhou");
+        }
+      }
+      else {
+        printf("\nX ganhou");
+      }
+    }
+    else {
+      printf("\nO ganhou");
+    }
+  }
+
+  return 0;
+}
